@@ -1,0 +1,137 @@
+// Hello world! Cplayground is an online sandbox that makes it easy to try out
+// code.
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <iostream>
+#include <typeinfo>
+
+using namespace std;
+
+struct node{
+    char * word;
+    int count;
+    struct node * next;
+};
+
+char*new_string(char * str){
+    return strcpy((char *)malloc(strlen(str)+1), str);
+}
+
+void init(node**nodelist){
+    *nodelist = NULL;
+}
+
+size_t len(node * head){
+    size_t len = 0;
+    node * pre = head;
+    while(pre != NULL){
+        pre = pre->next;
+        len++;
+    }
+    return len;
+}
+
+node * findnode(node * head, char * word){
+    node * ans = NULL;
+    node * pre = head;
+    if(pre == NULL) {
+        cout<<"I'm finding node, but there is no node at all."<<endl;
+        return ans;
+    }
+    
+    
+    while(*(pre->word) != *(word)){
+        pre = pre->next;
+        if(pre == NULL) break;
+    }
+    
+    if(pre!=NULL && *(pre->word) == *(word)){
+        ans = pre;
+    }
+    return ans;
+}
+
+void add(node ** nodelist, char * word){
+    node * head = *nodelist;
+    if(head == NULL){
+        cout<<"add node, but head is null"<<endl;
+    }
+    node * newnode = (node*)malloc(sizeof(node));
+    newnode->word = new_string(word);
+    newnode->count = 1;
+    
+    cout<<"create a newnode, whose word is "<<*(newnode->word)<<endl;
+    cout<<"create a newnode, whose count is "<<newnode->count<<endl;
+    
+    node * inlist = findnode( *nodelist, word);
+    
+    cout<<"not get here"<<endl;
+    if(inlist == NULL){
+        
+        cout<<"not find node same as new node"<<endl;
+        newnode->next = head;
+        *nodelist = newnode;
+        cout<<"after insert newnode, head's word is "<<*((*nodelist)->word)<<endl;
+        cout<<"after insert newnode, head's count is "<<(*nodelist)->count<<endl;
+    }else{
+        
+        cout<<"find a node whose word same as newnode"<<endl;
+        inlist->count = inlist->count + 1;
+    }
+    free(newnode);
+    cout<<"free new node after use "<<endl;
+}
+
+
+
+int main() {
+    char str[64] = "";
+    
+    char c = 'a';
+    strncat(str, &c, 1);
+    cout<<str<<endl;
+    
+    c = 'b';
+    strncat(str, &c, 1);
+    cout<<str<<endl;
+
+    memset(str, 0, 64);
+    cout<<str<<endl;
+    
+    strncat(str, &c, 1);
+    cout<<str<<endl;
+    
+    
+    node * nodes = NULL;
+    
+    init(&nodes);
+    if(nodes == NULL) {
+        cout << "init ok"<<endl;
+    }
+    
+    add(&nodes, str);
+    
+    cout<<"after called add node"<<endl;
+    cout<<nodes->count<<endl;
+    cout<<*(nodes->word)<<endl;
+    
+    
+    
+    
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

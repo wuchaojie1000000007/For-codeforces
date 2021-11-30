@@ -9,6 +9,12 @@
 
 using namespace std;
 
+void append(char * s, char c){
+    int len = strlen(s);
+    s[len] = c;
+    s[len+1] = '\0';
+}
+
 struct node{
     char * word;
     int count;
@@ -24,9 +30,11 @@ void init(node**nodelist){
 }
 
 size_t len(node * head){
+    //cout<<"check len"<<endl;
     size_t len = 0;
     node * pre = head;
     while(pre != NULL){
+        //cout<<"here"<<endl;
         pre = pre->next;
         len++;
     }
@@ -34,76 +42,97 @@ size_t len(node * head){
 }
 
 node * findnode(node * head, char * word){
+    
     node * ans = NULL;
     node * pre = head;
-    if(pre == NULL) {
-        cout<<"I'm finding node, but there is no node at all."<<endl;
-        return ans;
+    
+    while(pre != NULL){
+        
+        char * w = head->word;
+        bool same = strcmp(w, word)==0;
+
+        if(same) {
+            ans = pre;
+            break;
+        }else{
+            pre = pre->next;
+        }
     }
     
-    
-    while(*(pre->word) != *(word)){
-        pre = pre->next;
-        if(pre == NULL) break;
-    }
-    
-    if(pre!=NULL && *(pre->word) == *(word)){
-        ans = pre;
-    }
     return ans;
 }
 
 void add(node ** nodelist, char * word){
+    
+    string s(word);
+    cout<<"add words "<<s<<" into list"<<endl;
     node * head = *nodelist;
-    if(head == NULL){
-        cout<<"add node, but head is null"<<endl;
-    }
-    node * newnode = (node*)malloc(sizeof(node));
-    newnode->word = new_string(word);
-    newnode->count = 1;
-    
-    cout<<"create a newnode, whose word is "<<*(newnode->word)<<endl;
-    cout<<"create a newnode, whose count is "<<newnode->count<<endl;
-    
     node * inlist = findnode( *nodelist, word);
     
-    cout<<"not get here"<<endl;
+
     if(inlist == NULL){
+        cout<<"not find node same as new node, so create it"<<endl;
+        // create node cause it not in list
+        node * newnode = (node*)malloc(sizeof(node));
+        newnode->word = new_string(word);
+        newnode->count = 1;
         
-        cout<<"not find node same as new node"<<endl;
+        string s1(newnode->word);
+        cout<<"create a newnode, whose word is "<<s1<<endl;
+        cout<<"create a newnode, whose count is "<<newnode->count<<endl;
+        
+        cout<<"put new node in the front "<<endl;
         newnode->next = head;
         *nodelist = newnode;
-        cout<<"after insert newnode, head's word is "<<*((*nodelist)->word)<<endl;
+        
+        string s2((*nodelist)->word);
+        cout<<"after insert newnode, head's word is "<<s2<<endl;
         cout<<"after insert newnode, head's count is "<<(*nodelist)->count<<endl;
     }else{
         
         cout<<"find a node whose word same as newnode"<<endl;
         inlist->count = inlist->count + 1;
+        cout<<"count become "<<inlist->count<<endl;
     }
-    free(newnode);
-    cout<<"free new node after use "<<endl;
+    
+}
+
+void fp(node * head){
+    node * p;
+    for(p = head;p;p = p->next){
+        printf("%i\t%s\n", p->count, p->word);
+    }
 }
 
 
-
 int main() {
-    char str[64] = "";
+    /*
+    char c1[65] = "abc";
+    char c2[65] = "abc";
+    cout << "length of c1 is "<< strlen(c1)<<endl;
+    cout << "length of c2 is "<< strlen(c2)<<endl;
+    cout << "compare between c1 and c2 is " << strcmp(c1, c2)<<endl;
+    
+    cout << "reset mem of c1"<<endl;
+    memset(c1, '\0', 65);
+    
+    cout << "after reset mem of c1, length become " << strlen(c1) << endl;
+    cout << "after reset mem of c1, value become " << c1 << endl;
+    append(c1, 'a');
+    append(c1, 'b');
+    append(c1, 'c');
+    cout << "after add a b c, c1 is "<<c1<<" len is "<<strlen(c1)<<"value is "<<c1<<endl; 
+    cout << "compare between c1 and c2"<<strcmp(c1, c2)<<endl;
+*/
+    char str[65] = "";
     
     char c = 'a';
-    strncat(str, &c, 1);
-    cout<<str<<endl;
-    
+    append(str, c);
     c = 'b';
-    strncat(str, &c, 1);
-    cout<<str<<endl;
-
-    memset(str, 0, 64);
-    cout<<str<<endl;
-    
-    strncat(str, &c, 1);
-    cout<<str<<endl;
-    
-    
+    append(str, c);
+    c = 'c';
+    append(str, c);
+    cout<<strlen(str)<<endl;
     node * nodes = NULL;
     
     init(&nodes);
@@ -112,16 +141,46 @@ int main() {
     }
     
     add(&nodes, str);
-    
-    cout<<"after called add node"<<endl;
+    cout<<"after called add node 1"<<endl;
+    if(nodes != NULL) cout<<"nodes is not NULL, len is"<< len(nodes) <<endl;
+    else cout << "node is null"<<endl;
     cout<<nodes->count<<endl;
-    cout<<*(nodes->word)<<endl;
     
+    string s1(nodes->word);
+    cout<<s1<<endl;
+    cout<<strlen(nodes->word)<<endl;
+    cout << "already add word 'abc' "<<endl<<endl;
     
+    memset(str, '\0', 65);
+    c = 'a';
+    append(str, c);
+    c = 'b';
+    append(str, c);
+    c = 'b';
+    append(str, c);
     
+    add(&nodes, str);
     
+    cout<<"after called add node 2"<<endl;
+    if(nodes != NULL) cout<<"nodes is not NULL, len is"<< len(nodes) <<endl;
+    cout<<nodes->count<<endl;
+    string s2(nodes->word);
+    cout<<s2<<endl<<endl;
+    
+    fp(nodes);
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
